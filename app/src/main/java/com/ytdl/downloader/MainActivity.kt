@@ -47,6 +47,7 @@ class MainActivity : Activity() {
                     val python = Python.getInstance()
                     val pythonFile = python.getModule("main")
                     val test = pythonFile.callAttr("run", insideurl).toString()
+
                     runOnUiThread {
                         textView!!.text = test
                     }

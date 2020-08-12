@@ -4,6 +4,7 @@ class downloader:
         self.file = []
 
     def test(self, url):
+        import os
         import youtube_dl as yt
         from android.os import Environment
         from com.arthenica.mobileffmpeg import FFmpeg
@@ -18,8 +19,15 @@ class downloader:
                     "progress_hooks": [self.my_hook]
                 }
         with yt.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(url, download=False)
+            video_title = str(info_dict.get('title', None))
             ydl.download([url])
-            return self.file
+            if len(self.file) == 2:
+                lastName = "\"" + str(Environment.getExternalStorageDirectory()) + "/Download/ytdl/" + video_title + ".mp4\""
+                FFmpeg.execute("-i \""+ self.file[0] +"\" -i  \""+ self.file[1] +"\" -c:v copy -c:a aac " + lastName)
+                os.remove(self.file[0])
+                os.remove(self.file[1])
+            return "Done Downloading"
 
         
     def my_hook(self, d):
