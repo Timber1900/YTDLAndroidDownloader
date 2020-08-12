@@ -1,5 +1,5 @@
+
 class downloader:
-    
     def __init__(self):
         self.file = []
 
@@ -8,7 +8,6 @@ class downloader:
         import youtube_dl as yt
         from android.os import Environment
         from com.arthenica.mobileffmpeg import FFmpeg
-        from android.widget import TextView
         path = str(Environment.getExternalStorageDirectory()) +"/Download/ytdl/%(title)s.%(ext)s"
         
         ydl_opts = {
@@ -36,9 +35,11 @@ class downloader:
         if d["status"] == "downloading":
             pass
 
-def run(url):
+
+def run(url, textView):
+    textView.setText("Test")
     down = downloader()
-    val = down.test(url)
+    val = down.test(url) 
     return val
 
 
