@@ -1,7 +1,18 @@
 def test(url):
-    import youtube_dl
+    import youtube_dl as yt
+    import os
+    path = "storage/emulated/0/Download/%(title)s.%(ext)s"
 
-    return url
+    ydl_opts = {
+        "outtmpl": path,
+        'format': 'bestaudio/best',
+        "ignoreerrors": True,
+        "cachedir": False,
+    }
+    with yt.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])
+
+    return os.environ
 
 
 

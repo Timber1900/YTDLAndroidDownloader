@@ -26,6 +26,9 @@ class MainActivity : Activity() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
             requestPermissions( arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
         }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
+            requestPermissions( arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)
+        }
 
         setContentView(R.layout.activity_main)
         textView = findViewById<View>(R.id.textView) as TextView
