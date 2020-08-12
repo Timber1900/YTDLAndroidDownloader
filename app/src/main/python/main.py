@@ -1,7 +1,7 @@
-def test():
-    import time
-    time.sleep(10)
-    return "Sucess"
+def test(url):
+    import youtube_dl
+
+    print(url)
 
 
 
