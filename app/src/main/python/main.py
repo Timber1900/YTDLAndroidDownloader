@@ -1,7 +1,7 @@
 def test(url):
     import youtube_dl as yt
     import os
-    path = "storage/emulated/0/Download/%(title)s.%(ext)s"
+    path = os.environ["EXTERNAL_STORAGE"]+"/Download/%(title)s.%(ext)s"
 
     ydl_opts = {
         "outtmpl": path,
@@ -12,7 +12,7 @@ def test(url):
     with yt.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
 
-    return os.environ
+    return path
 
 
 
