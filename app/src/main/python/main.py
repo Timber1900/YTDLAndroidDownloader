@@ -1,5 +1,11 @@
 from java import dynamic_proxy
 from java.lang import Runnable
+import os
+import youtube_dl as yt
+from android.os import Environment
+from com.arthenica.mobileffmpeg import FFmpeg
+
+
 
 
 
@@ -11,18 +17,16 @@ def run(activity, url, textView):
         def run(self):
                 textView.setText(self.text)
 
+    def updateText(text):
+        classToRun.setString(text)
+        activity.runOnUiThread(classToRun)
+
     class downloader:
         def __init__(self):
             self.file = []
 
         def download(self, url):
-            import os
-            import youtube_dl as yt
-            from android.os import Environment
-            from com.arthenica.mobileffmpeg import FFmpeg
-
             
-
             path = str(Environment.getExternalStorageDirectory()) +"/Download/ytdl/%(title)s.%(ext)s"
             
             ydl_opts = {
@@ -33,14 +37,14 @@ def run(activity, url, textView):
                         "progress_hooks": [self.my_hook]
                     }
             with yt.YoutubeDL(ydl_opts) as ydl:
-                info_dict = ydl.extract_info(url, download=False)
+                info_dict = ydl.extract_info(url, download=True)
                 video_title = str(info_dict.get('title', None))
-                ydl.download([url])
+                #ydl.download([url])
                 if len(self.file) == 2:
                     lastName = "\"" + str(Environment.getExternalStorageDirectory()) + "/Download/ytdl/" + video_title + ".mp4\""
                     FFmpeg.execute("-i \""+ self.file[0] +"\" -i  \""+ self.file[1] +"\" -c:v copy -c:a aac " + lastName)
-                    #os.remove(self.file[0])
-                    #os.remove(self.file[1])
+                    os.remove(self.file[0])
+                    os.remove(self.file[1])
                 return "Done Downloading"
 
             
@@ -50,9 +54,6 @@ def run(activity, url, textView):
             if d["status"] == "downloading":
                 updateText(d["_percent_str"])
 
-    def updateText(text):
-        classToRun.setString(text)
-        activity.runOnUiThread(classToRun)
 
     classToRun = R()    
     down = downloader()
