@@ -42,7 +42,7 @@ class MainActivity : Activity() {
                 if (insideurl != null) {
                     val python = Python.getInstance()
                     val pythonFile = python.getModule("main")
-                    val test = pythonFile.callAttr("run", insideurl, label).toString()
+                    val test = pythonFile.callAttr("run", this, insideurl, label).toString()
                     runOnUiThread {
                         label!!.text = test
                     }
