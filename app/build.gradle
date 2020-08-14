@@ -9,7 +9,7 @@ android {
     buildToolsVersion "30.0.1"
 
     defaultConfig {
-        applicationId "com.example.testmultithreading"
+        applicationId "com.ytdl.downloader"
         minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
