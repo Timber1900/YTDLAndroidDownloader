@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "Test Multithreading"
+rootProject.name = "YTDL Downloader"
