@@ -43,7 +43,6 @@ class MainActivity : Activity() {
             val extras = intent.extras
             videoTitle!!.text = "Video Acquired"
             url = extras!!.getString(Intent.EXTRA_TEXT).toString()
-            videoTitle!!.text = url
         }
     }
 
