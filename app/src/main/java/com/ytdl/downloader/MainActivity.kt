@@ -24,6 +24,7 @@ class MainActivity : Activity() {
     private var velocity: TextView? = null
     private  var audioOnly: Switch? = null
     private var url: String? = null
+    private var preUrl: String? = null
     @RequiresApi(Build.VERSION_CODES.M)
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,11 +39,17 @@ class MainActivity : Activity() {
     }
 
     public override fun onStart() {
+
         if (intent.extras != null) {
             val extras = intent.extras
             videoTitle!!.text = "Video Acquired"
             url = extras!!.getString(Intent.EXTRA_TEXT).toString()
+            if (url == preUrl) {
+                videoTitle!!.text = "Video Acquired (Same Video)"
+            }
+            preUrl = url
         }
+
         super.onStart()
     }
 
