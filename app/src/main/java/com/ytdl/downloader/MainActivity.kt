@@ -8,15 +8,22 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.CheckBox
+import android.widget.ProgressBar
+import android.widget.Switch
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.chaquo.python.Python
 
-
+@SuppressLint("SetTextI18n")
 class MainActivity : Activity() {
-    private var label: TextView? = null
+    private var videoTitle: TextView? = null
+    private var progress: ProgressBar? = null
+    private var percentage: TextView? = null
+    private var velocity: TextView? = null
+    private  var audioOnly: Switch? = null
     private var url: String? = null
     @RequiresApi(Build.VERSION_CODES.M)
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,33 +33,38 @@ class MainActivity : Activity() {
 
         setContentView(R.layout.activity_main)
 
-        label = findViewById(R.id.textView)
+        videoTitle = findViewById(R.id.videoTitle)
+        progress = findViewById(R.id.progress)
+        percentage = findViewById(R.id.percentage)
+        velocity = findViewById(R.id.velocity)
+        audioOnly = findViewById(R.id.audio)
+
         if (intent.extras != null) {
             val extras = intent.extras
+            videoTitle!!.text = "Video Acquired"
             url = extras!!.getString(Intent.EXTRA_TEXT).toString()
+            videoTitle!!.text = url
         }
-
     }
 
-        @SuppressLint("SetTextI18n")
-        fun startProgress(view: View?) {
-            label!!.text = "Running"
-            Thread(Runnable {
-                val insideurl: String? = url
-                if (insideurl != null) {
-                    val python = Python.getInstance()
-                    val pythonFile = python.getModule("main")
-                    val test = pythonFile.callAttr("run", this, insideurl, label).toString()
-                    runOnUiThread {
-                        label!!.text = test
-                    }
+    fun startProgress(view: View?) {
+        videoTitle!!.text = "Downloading"
+        Thread(Runnable {
+            val insideurl: String? = url
+            if (insideurl != null) {
+                val python = Python.getInstance()
+                val pythonFile = python.getModule("main")
+                val test = pythonFile.callAttr("run", this, insideurl, audioOnly!!.isChecked, progress, percentage, velocity).toString()
+                runOnUiThread {
+                    videoTitle!!.text = test
                 }
-                else {
-                    runOnUiThread {
-                        label!!.text = "No URL"
-                    }
+            }
+            else {
+                runOnUiThread {
+                    videoTitle!!.text = "No URL"
                 }
-            }).start()
+            }
+        }).start()
     }
 
     private fun checkPermission(permission: String, requestCode: Int) {

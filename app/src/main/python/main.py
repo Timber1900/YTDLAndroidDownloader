@@ -5,20 +5,32 @@ import youtube_dl as yt
 from android.os import Environment
 from com.arthenica.mobileffmpeg import FFmpeg
 
-
-
-
-
-def run(activity, url, textView):
+def run(activity, url, audioOnly, progressW, percentageW, velocityW):
     class R(dynamic_proxy(Runnable)):
-        def setString(self, text):
-            self.text = text
+        def __init__(self):
+            super(R, self).__init__()
+            self.progress = 0
+            self.velocity = 0
+            
+
+        def setProgress(self, progress):
+            self.progress = progress
+
+        def setVelocity(self, velocity):
+            self.velocity = velocity
         
         def run(self):
-                textView.setText(self.text)
+                progressW.setProgress(int(round(float(self.progress))))
+                percentageW.setText(str(self.progress) + "%")
+                velocityW.setText(str(self.velocity))
 
-    def updateText(text):
-        classToRun.setString(text)
+    def updateProgress(progress):
+        classToRun.setProgress(progress)
+
+    def updateVelocity(velocity):
+        classToRun.setVelocity(velocity)
+    
+    def update():
         activity.runOnUiThread(classToRun)
 
     class downloader:
@@ -28,32 +40,47 @@ def run(activity, url, textView):
         def download(self, url):
             
             path = str(Environment.getExternalStorageDirectory()) +"/Download/ytdl/%(title)s.%(ext)s"
-            
-            ydl_opts = {
-                        "outtmpl": path,
-                        "format": '137+bestaudio/best',
-                        "ignoreerrors": True,
-                        "cachedir": False,
-                        "progress_hooks": [self.my_hook]
-                    }
+            if not audioOnly:
+                ydl_opts = {
+                            "outtmpl": path,
+                            "format": '137+bestaudio/best',
+                            "ignoreerrors": True,
+                            "cachedir": False,
+                            "progress_hooks": [self.my_hook]
+                        }
+            else:
+                ydl_opts = {
+                            "outtmpl": path,
+                            "format": '140',
+                            "ignoreerrors": True,
+                            "cachedir": False,
+                            "progress_hooks": [self.my_hook]
+                        }
             with yt.YoutubeDL(ydl_opts) as ydl:
-                info_dict = ydl.extract_info(url, download=True)
+                ydl.download([url])
+                info_dict = ydl.extract_info(url, download=False)
                 video_title = str(info_dict.get('title', None))
-                #ydl.download([url])
+                
                 if len(self.file) == 2:
                     lastName = "\"" + str(Environment.getExternalStorageDirectory()) + "/Download/ytdl/" + video_title + ".mp4\""
                     FFmpeg.execute("-i \""+ self.file[0] +"\" -i  \""+ self.file[1] +"\" -c:v copy -c:a aac " + lastName)
                     os.remove(self.file[0])
                     os.remove(self.file[1])
-                return "Done Downloading"
+                return "Done Downloading \"" + video_title + "\""
 
             
         def my_hook(self, d):
             if d["status"] == "finished":
                 self.file.append(d["filename"])
             if d["status"] == "downloading":
-                updateText(d["_percent_str"])
-
+                p = d["_percent_str"]
+                p = p.replace("%", "")
+                updateProgress(p)
+                vel = d["speed"]
+                if isinstance(vel, float):
+                    vel = vel / (1048576)
+                    updateVelocity("{:.2f}".format(vel) + " Mb/s")
+                update()
 
     classToRun = R()    
     down = downloader()
