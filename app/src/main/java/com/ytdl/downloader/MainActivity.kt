@@ -42,16 +42,18 @@ class MainActivity : Activity() {
             val extras = intent.extras
             videoTitle!!.text = "Video Acquired"
             url = extras!!.getString(Intent.EXTRA_TEXT).toString()
-            videoTitle!!.text = url
         }
         super.onStart()
     }
 
     fun startProgress(view: View?) {
-        videoTitle!!.text = "Downloading"
+
         Thread(Runnable {
             val insideurl: String? = url
             if (insideurl != null) {
+                runOnUiThread {
+                    videoTitle!!.text = "Downloading"
+                }
                 val python = Python.getInstance()
                 val pythonFile = python.getModule("main")
                 val test = pythonFile.callAttr(
@@ -69,7 +71,7 @@ class MainActivity : Activity() {
                 }
             } else {
                 runOnUiThread {
-                    videoTitle!!.text = "No URL"
+                    videoTitle!!.text = "No video selected"
                 }
             }
         }).start()
