@@ -38,7 +38,10 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW):
             self.file = []
 
         def download(self, url):
-            
+            # urlSplitted = url.split(":")
+            # count = len(urlSplitted) - 1
+            # url = urlSplitted[count-1] + ":" + urlSplitted[count]
+            # url = url.replace(" ", "")
             path = str(Environment.getExternalStorageDirectory()) +"/Download/ytdl/%(title)s.%(ext)s"
             if not audioOnly:
                 ydl_opts = {

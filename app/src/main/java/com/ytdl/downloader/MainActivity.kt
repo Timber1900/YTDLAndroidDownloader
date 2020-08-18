@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.CheckBox
 import android.widget.ProgressBar
 import android.widget.Switch
 import android.widget.TextView
@@ -28,22 +27,24 @@ class MainActivity : Activity() {
     @RequiresApi(Build.VERSION_CODES.M)
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkPermission(Manifest.permission.INTERNET,100)
-        checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,101)
-
+        checkPermission(Manifest.permission.INTERNET, 100)
+        checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 101)
         setContentView(R.layout.activity_main)
-
         videoTitle = findViewById(R.id.videoTitle)
         progress = findViewById(R.id.progress)
         percentage = findViewById(R.id.percentage)
         velocity = findViewById(R.id.velocity)
         audioOnly = findViewById(R.id.audio)
+    }
 
+    public override fun onStart() {
         if (intent.extras != null) {
             val extras = intent.extras
             videoTitle!!.text = "Video Acquired"
             url = extras!!.getString(Intent.EXTRA_TEXT).toString()
+            videoTitle!!.text = url
         }
+        super.onStart()
     }
 
     fun startProgress(view: View?) {
@@ -53,12 +54,20 @@ class MainActivity : Activity() {
             if (insideurl != null) {
                 val python = Python.getInstance()
                 val pythonFile = python.getModule("main")
-                val test = pythonFile.callAttr("run", this, insideurl, audioOnly!!.isChecked, progress, percentage, velocity).toString()
+                val test = pythonFile.callAttr(
+                    "run",
+                    this,
+                    insideurl,
+                    audioOnly!!.isChecked,
+                    progress,
+                    percentage,
+                    velocity
+                ).toString()
+
                 runOnUiThread {
                     videoTitle!!.text = test
                 }
-            }
-            else {
+            } else {
                 runOnUiThread {
                     videoTitle!!.text = "No URL"
                 }
