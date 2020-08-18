@@ -24,7 +24,6 @@ class MainActivity : Activity() {
     private var velocity: TextView? = null
     private  var audioOnly: Switch? = null
     private var url: String? = null
-    private var preUrl: String? = null
     @RequiresApi(Build.VERSION_CODES.M)
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,20 +35,17 @@ class MainActivity : Activity() {
         percentage = findViewById(R.id.percentage)
         velocity = findViewById(R.id.velocity)
         audioOnly = findViewById(R.id.audio)
-    }
+
+}
 
     public override fun onStart() {
-
         if (intent.extras != null) {
-            val extras = intent.extras
-            videoTitle!!.text = "Video Acquired"
-            url = extras!!.getString(Intent.EXTRA_TEXT).toString()
-            if (url == preUrl) {
-                videoTitle!!.text = "Video Acquired (Same Video)"
+            if (intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == 0) {
+                val extras = intent.extras
+                videoTitle!!.text = "Video Acquired"
+                url = extras!!.getString(Intent.EXTRA_TEXT).toString()
             }
-            preUrl = url
         }
-
         super.onStart()
     }
 

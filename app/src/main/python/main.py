@@ -47,12 +47,14 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW):
                 ydl_opts = {
                             "outtmpl": path,
                             "format": '137+bestaudio/best',
+                            "cachedir": False,
                             "progress_hooks": [self.my_hook]
                         }
             else:
                 ydl_opts = {
                             "outtmpl": path,
                             "format": '140',
+                            "cachedir": False,
                             "progress_hooks": [self.my_hook]
                         }
             with yt.YoutubeDL(ydl_opts) as ydl:
