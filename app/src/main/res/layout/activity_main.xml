@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/gridLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor">
 
     <Button
         android:id="@+id/downloader"
@@ -38,6 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0.0 Mb/s"
+        android:textColor="@color/textColor"
         app:layout_constraintEnd_toEndOf="@+id/progress"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/progress"
@@ -48,6 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0.0%"
+        android:textColor="@color/textColor"
         app:layout_constraintEnd_toEndOf="@+id/progress"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/progress"
@@ -58,6 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Audio Only"
+        android:textColor="@color/textColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,6 +73,7 @@
         android:layout_height="wrap_content"
         android:text="No video selected"
         android:textAlignment="center"
+        android:textColor="@color/textColor"
         app:layout_constraintBottom_toTopOf="@+id/downloader"
         app:layout_constraintEnd_toEndOf="@+id/progress"
         app:layout_constraintHorizontal_bias="1.0"
