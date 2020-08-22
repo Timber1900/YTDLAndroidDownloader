@@ -2,27 +2,33 @@ package com.ytdl.downloader
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.Switch
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.chaquo.python.Python
+import androidx.preference.PreferenceFragmentCompat
 
 @SuppressLint("SetTextI18n")
-class MainActivity : Activity() {
+class MainActivity : AppCompatActivity() {
     private var videoTitle: TextView? = null
     private var progress: ProgressBar? = null
     private var percentage: TextView? = null
     private var velocity: TextView? = null
-    private  var audioOnly: Switch? = null
+    private  var audioOnly: androidx.appcompat.widget.SwitchCompat? = null
+    private  var fps: androidx.appcompat.widget.SwitchCompat? = null
     private var url: String? = null
     @RequiresApi(Build.VERSION_CODES.M)
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,12 +36,13 @@ class MainActivity : Activity() {
         checkPermission(Manifest.permission.INTERNET, 100)
         checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 101)
         setContentView(R.layout.activity_main)
+
         videoTitle = findViewById(R.id.videoTitle)
         progress = findViewById(R.id.progress)
         percentage = findViewById(R.id.percentage)
         velocity = findViewById(R.id.velocity)
         audioOnly = findViewById(R.id.audio)
-
+        fps = findViewById(R.id.fps)
 }
 
     public override fun onStart() {
@@ -90,5 +97,50 @@ class MainActivity : Activity() {
                 requestCode
             )
         }
+    }
+
+    fun onFlipSwtich(view: View?) {
+        if (fps!!.isChecked) {
+            fps!!.text = "60 fps"
+        } else {
+            fps!!.text = "30 fps"
+        }
+    }
+
+    class SettingsFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(R.xml.preference_main, rootKey)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.SettingsButton -> openSettings()
+            else -> {
+                openMain()
+
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun openSettings() {
+        setContentView(R.layout.settings_activity)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.settings, SettingsFragment())
+            .commit()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    private fun openMain() {
+        setContentView(R.layout.activity_main)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
 }

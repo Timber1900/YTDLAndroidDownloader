@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Youtube Downloader</string>
+    <string name="HHD">1080p</string>
+    <string name="HD">720p</string>
+    <string name="HQ">480p</string>
+    <string name="Q">240p</string>
+
 </resources>

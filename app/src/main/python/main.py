@@ -46,7 +46,7 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW):
             if not audioOnly:
                 ydl_opts = {
                             "outtmpl": path,
-                            "format": '137+bestaudio/best',
+                            "format": '22',
                             "cachedir": False,
                             "progress_hooks": [self.my_hook]
                         }
@@ -64,9 +64,9 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW):
                 
                 if len(self.file) == 2:
                     lastName = "\"" + str(Environment.getExternalStorageDirectory()) + "/Download/ytdl/" + video_title + ".mp4\""
-                    FFmpeg.execute("-i \""+ self.file[0] +"\" -i  \""+ self.file[1] +"\" -c:v copy -c:a aac " + lastName)
-                    os.remove(self.file[0])
-                    os.remove(self.file[1])
+                    ##FFmpeg.execute("-i \""+ self.file[0] +"\" -i  \""+ self.file[1] +"\" -c:v copy -c:a aac " + lastName)
+                    ##os.remove(self.file[0])
+                    ##os.remove(self.file[1])
                 return "Done Downloading \"" + video_title + "\""
 
             
