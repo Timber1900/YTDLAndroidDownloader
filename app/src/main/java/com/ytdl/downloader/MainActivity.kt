@@ -42,7 +42,6 @@ class MainActivity : AppCompatActivity() {
         percentage = findViewById(R.id.percentage)
         velocity = findViewById(R.id.velocity)
         audioOnly = findViewById(R.id.audio)
-        fps = findViewById(R.id.fps)
 }
 
     public override fun onStart() {
@@ -99,13 +98,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun onFlipSwtich(view: View?) {
-        if (fps!!.isChecked) {
-            fps!!.text = "60 fps"
-        } else {
-            fps!!.text = "30 fps"
-        }
-    }
 
     class SettingsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
