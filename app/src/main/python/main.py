@@ -37,7 +37,7 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality):
         def __init__(self):
             self.file = []
 
-        def download(self, url, filetype, path):
+        def download(self, url, filetype):
             # urlSplitted = url.split(":")
             # count = len(urlSplitted) - 1
             # url = urlSplitted[count-1] + ":" + urlSplitted[count]
