@@ -30,8 +30,6 @@ class MainActivity : AppCompatActivity() {
     private var audioOnly: androidx.appcompat.widget.SwitchCompat? = null
     private var url: String? = null
     private var quality: String? = null
-    private var path: String? = "TEST"
-    //private var fps: String? = null
 
     @RequiresApi(Build.VERSION_CODES.M)
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,8 +44,6 @@ class MainActivity : AppCompatActivity() {
         audioOnly = findViewById(R.id.audio)
         val mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         quality = mSharedPreferences.getString(getString(R.string.sp_key_quality_preference), "1080")
-        //fps = mSharedPreferences.getString(getString(R.string.sp_key_fps_selected), "60")
-
 
     }
 
@@ -81,8 +77,8 @@ class MainActivity : AppCompatActivity() {
                     progress,
                     percentage,
                     velocity,
-                    quality,
-                    path
+                    quality
+
                 ).toString()
 
                 runOnUiThread {
