@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="Resolutions">
+        <item>1080p (Best)</item>
+        <item>720p</item>
+        <item>480p</item>
+        <item>360p</item>
+        <item>240p</item>
+        <item>144p</item>
+    </string-array>
+    <string-array name="ResolutionsAlias">
+        <item>1080</item>
+        <item>720</item>
+        <item>480</item>
+        <item>360</item>
+        <item>240</item>
+        <item>144</item>
+    </string-array>
+</resources>

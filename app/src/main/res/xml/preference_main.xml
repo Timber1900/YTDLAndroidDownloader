@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="General">
-        <SwitchPreference
-            android:key="switch_preference"
-            android:title="Dark Theme"
-            android:summary="Turn on dark theme."/>
+        <ListPreference
+            android:defaultValue="1080"
+            android:entries="@array/Resolutions"
+            android:entryValues="@array/ResolutionsAlias"
+            android:key="@string/sp_key_quality_preference"
+            android:summary="Quality for the downloaded video"
+            android:title="Quality" />
+        <!--ListPreference
+            android:defaultValue="60"
+            android:entries="@array/fps"
+            android:entryValues="@array/fpsAlias"
+            android:key="@string/sp_key_fps_selected"
+            android:summary="Frame per second of downloaded video"
+            android:title="Select FPS" /> -->
+
     </PreferenceCategory>
 
 </PreferenceScreen>

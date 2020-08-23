@@ -5,7 +5,7 @@ import youtube_dl as yt
 from android.os import Environment
 from com.arthenica.mobileffmpeg import FFmpeg
 
-def run(activity, url, audioOnly, progressW, percentageW, velocityW):
+def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality):
     class R(dynamic_proxy(Runnable)):
         def __init__(self):
             super(R, self).__init__()
@@ -37,7 +37,7 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW):
         def __init__(self):
             self.file = []
 
-        def download(self, url):
+        def download(self, url, filetype):
             # urlSplitted = url.split(":")
             # count = len(urlSplitted) - 1
             # url = urlSplitted[count-1] + ":" + urlSplitted[count]
@@ -46,8 +46,9 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW):
             if not audioOnly:
                 ydl_opts = {
                             "outtmpl": path,
-                            "format": '22',
+                            "format": filetype,
                             "cachedir": False,
+                            "ignoreerrors": True,
                             "progress_hooks": [self.my_hook]
                         }
             else:
@@ -55,6 +56,7 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW):
                             "outtmpl": path,
                             "format": '140',
                             "cachedir": False,
+                            "ignoreerrors": True,
                             "progress_hooks": [self.my_hook]
                         }
             with yt.YoutubeDL(ydl_opts) as ydl:
@@ -64,9 +66,9 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW):
                 
                 if len(self.file) == 2:
                     lastName = "\"" + str(Environment.getExternalStorageDirectory()) + "/Download/ytdl/" + video_title + ".mp4\""
-                    ##FFmpeg.execute("-i \""+ self.file[0] +"\" -i  \""+ self.file[1] +"\" -c:v copy -c:a aac " + lastName)
-                    ##os.remove(self.file[0])
-                    ##os.remove(self.file[1])
+                    FFmpeg.execute("-i \""+ self.file[0] +"\" -i  \""+ self.file[1] +"\" -c:v copy -c:a aac " + lastName)
+                    os.remove(self.file[0])
+                    os.remove(self.file[1])
                 return "Done Downloading \"" + video_title + "\""
 
             
@@ -83,7 +85,18 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW):
                     updateVelocity("{:.2f}".format(vel) + " Mb/s")
                 update()
 
+    switcher = {
+        '1080': 'bestvideo+bestaudio/best',
+        '720': '136+bestaudio/best',
+        '480': '135+bestaudio/best',
+        '360': '134+bestaudio/best',
+        '240': '133+bestaudio/best',
+        '144': '160+bestaudio/best'
+    }
+
+    filetype = switcher.get(quality, "22")
+    print(quality)
     classToRun = R()    
     down = downloader()
-    val = down.download(url) 
+    val = down.download(url, filetype) 
     return val

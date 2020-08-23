@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.chaquo.python.Python
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 
 @SuppressLint("SetTextI18n")
 class MainActivity : AppCompatActivity() {
@@ -27,22 +28,27 @@ class MainActivity : AppCompatActivity() {
     private var progress: ProgressBar? = null
     private var percentage: TextView? = null
     private var velocity: TextView? = null
-    private  var audioOnly: androidx.appcompat.widget.SwitchCompat? = null
-    private  var fps: androidx.appcompat.widget.SwitchCompat? = null
+    private var audioOnly: androidx.appcompat.widget.SwitchCompat? = null
     private var url: String? = null
+    private var quality: String? = null
+    //private var fps: String? = null
+
     @RequiresApi(Build.VERSION_CODES.M)
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkPermission(Manifest.permission.INTERNET, 100)
         checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 101)
         setContentView(R.layout.activity_main)
-
         videoTitle = findViewById(R.id.videoTitle)
         progress = findViewById(R.id.progress)
         percentage = findViewById(R.id.percentage)
         velocity = findViewById(R.id.velocity)
         audioOnly = findViewById(R.id.audio)
+        val mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        quality = mSharedPreferences.getString(getString(R.string.sp_key_quality_preference), "1080")
+        //fps = mSharedPreferences.getString(getString(R.string.sp_key_fps_selected), "60")
 }
+
 
     public override fun onStart() {
         if (intent.extras != null) {
@@ -72,7 +78,8 @@ class MainActivity : AppCompatActivity() {
                     audioOnly!!.isChecked,
                     progress,
                     percentage,
-                    velocity
+                    velocity,
+                    quality
                 ).toString()
 
                 runOnUiThread {
@@ -115,7 +122,6 @@ class MainActivity : AppCompatActivity() {
             R.id.SettingsButton -> openSettings()
             else -> {
                 openMain()
-
             }
         }
 
