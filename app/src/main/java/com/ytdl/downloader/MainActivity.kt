@@ -2,25 +2,24 @@ package com.ytdl.downloader
 
 import android.Manifest
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.chaquo.python.Python
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import com.chaquo.python.Python
 
 @SuppressLint("SetTextI18n")
 class MainActivity : AppCompatActivity() {
@@ -31,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private var audioOnly: androidx.appcompat.widget.SwitchCompat? = null
     private var url: String? = null
     private var quality: String? = null
+    private var path: String? = "TEST"
     //private var fps: String? = null
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -47,7 +47,9 @@ class MainActivity : AppCompatActivity() {
         val mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         quality = mSharedPreferences.getString(getString(R.string.sp_key_quality_preference), "1080")
         //fps = mSharedPreferences.getString(getString(R.string.sp_key_fps_selected), "60")
-}
+
+
+    }
 
 
     public override fun onStart() {
@@ -79,7 +81,8 @@ class MainActivity : AppCompatActivity() {
                     progress,
                     percentage,
                     velocity,
-                    quality
+                    quality,
+                    path
                 ).toString()
 
                 runOnUiThread {
@@ -141,4 +144,5 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
+
 }

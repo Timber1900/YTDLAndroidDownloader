@@ -5,7 +5,7 @@ import youtube_dl as yt
 from android.os import Environment
 from com.arthenica.mobileffmpeg import FFmpeg
 
-def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality):
+def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality, path):
     class R(dynamic_proxy(Runnable)):
         def __init__(self):
             super(R, self).__init__()
@@ -37,7 +37,7 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality):
         def __init__(self):
             self.file = []
 
-        def download(self, url, filetype):
+        def download(self, url, filetype, path):
             # urlSplitted = url.split(":")
             # count = len(urlSplitted) - 1
             # url = urlSplitted[count-1] + ":" + urlSplitted[count]
