@@ -16,6 +16,10 @@
             android:key="@string/sp_key_fps_selected"
             android:summary="Frame per second of downloaded video"
             android:title="Select FPS" /> -->
+
+        <Preference
+            android:key="filepicker"
+            android:title="Pick Download Location"></Preference>
     </PreferenceCategory>
     <PreferenceCategory android:title="Feedback">
 

@@ -5,7 +5,7 @@ import youtube_dl as yt
 from android.os import Environment
 from com.arthenica.mobileffmpeg import FFmpeg
 
-def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality):
+def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality, path):
     class R(dynamic_proxy(Runnable)):
         def __init__(self):
             super(R, self).__init__()
@@ -37,8 +37,8 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality):
         def __init__(self):
             self.file = []
 
-        def download(self, url, filetype):
-            path = str(Environment.getExternalStorageDirectory()) +"/Download/ytdl/%(title)s.%(ext)s"
+        def download(self, url, filetype, path):
+            path = path + "/%(title)s.%(ext)s"
             if not audioOnly:
                 ydl_opts = {
                             "outtmpl": path,
@@ -59,8 +59,8 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality):
                 ydl.download([url])
                 updateVelocity("Converting")
                 update()
-                print(len(self.file))
-                temp = []
+                info_dict = ydl.extract_info(url, download=False)
+                video_title = str(info_dict.get('title', None))
                 if len(self.file) >= 2:
                     for i in range(int(len(self.file) / 2)):
                         tempFile = self.file[i*2]
@@ -70,8 +70,7 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality):
                         FFmpeg.execute("-i \""+ self.file[i*2] +"\" -i  \""+ self.file[i*2 + 1] +"\" -c:v copy -c:a aac " + "\"" + video_title + "\"")
                         os.remove(self.file[i*2])
                         os.remove(self.file[i*2+1])
-                return "Done Downloading"
-                # return str(temp)
+                return "Done Downloading \"" + video_title + "\""
 
             
         def my_hook(self, d):
@@ -100,5 +99,5 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality):
     print(quality)
     classToRun = R()    
     down = downloader()
-    val = down.download(url, filetype) 
+    val = down.download(url, filetype, path)
     return val

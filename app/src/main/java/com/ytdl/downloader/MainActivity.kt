@@ -3,9 +3,12 @@ package com.ytdl.downloader
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -14,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.Preference
@@ -21,15 +25,18 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.chaquo.python.Python
 
+
 @SuppressLint("SetTextI18n")
-class MainActivity : AppCompatActivity() {
+open class MainActivity : AppCompatActivity() {
     private var videoTitle: TextView? = null
     private var progress: ProgressBar? = null
     private var percentage: TextView? = null
     private var velocity: TextView? = null
-    private var audioOnly: androidx.appcompat.widget.SwitchCompat? = null
+    private var audioOnly: SwitchCompat? = null
     private var url: String? = null
     private var quality: String? = null
+    private var path: String? = null
+    private lateinit var mSharedPreferences: SharedPreferences
 
     @RequiresApi(Build.VERSION_CODES.M)
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,8 +49,13 @@ class MainActivity : AppCompatActivity() {
         percentage = findViewById(R.id.percentage)
         velocity = findViewById(R.id.velocity)
         audioOnly = findViewById(R.id.audio)
-        val mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        quality = mSharedPreferences.getString(getString(R.string.sp_key_quality_preference), "1080")
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        quality =
+            mSharedPreferences.getString(getString(R.string.sp_key_quality_preference), "1080")
+        path = mSharedPreferences.getString(
+            "filepicker", Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOWNLOADS
+            ).toString() + "/ytdl")
 
     }
 
@@ -62,6 +74,11 @@ class MainActivity : AppCompatActivity() {
     fun startProgress(view: View?) {
 
         Thread(Runnable {
+            val path = mSharedPreferences.getString(
+                "filepicker", Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS
+                ).toString() + "/ytdl"
+            )
             val insideurl: String? = url
             if (insideurl != null) {
                 runOnUiThread {
@@ -77,8 +94,8 @@ class MainActivity : AppCompatActivity() {
                     progress,
                     percentage,
                     velocity,
-                    quality
-
+                    quality,
+                    path
                 ).toString()
 
                 runOnUiThread {
@@ -105,9 +122,26 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    class SettingsFragment : PreferenceFragmentCompat() {
+    class SettingsFragment : PreferenceFragmentCompat() , SharedPreferences.OnSharedPreferenceChangeListener {
+        var filePicker: Preference? = null
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.preference_main, rootKey)
+            filePicker =
+                findPreference("filepicker") as Preference?
+            filePicker!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                val i = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+                i.addCategory(Intent.CATEGORY_DEFAULT)
+                startActivityForResult(Intent.createChooser(i, "Choose directory"), 9999)
+                return@OnPreferenceClickListener true
+            }
+        }
+
+        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+            filePicker!!.summary = sharedPreferences!!.getString(
+                "filepicker", Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS
+                ).toString() + "/ytdl"
+            )
         }
     }
 
@@ -141,4 +175,21 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
 
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val uri: Uri = data!!.data!!
+        if (uri.toString().contains("content://com.android.providers")) {
+            Toast.makeText(
+                this,
+                "Don't use \"Open from Downloads\"', select the one with your phone name",
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            val path_ = FileUtil.getFullPathFromTreeUri(uri, this)
+            mSharedPreferences.edit().putString("filepicker", path_).apply()
+            Toast.makeText(this, path_, Toast.LENGTH_SHORT).show()
+            path = path_
+        }
+    }
 }
