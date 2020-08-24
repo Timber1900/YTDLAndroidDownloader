@@ -78,15 +78,4 @@
         app:layout_constraintTop_toBottomOf="@+id/progress"
         app:layout_constraintVertical_bias="0.915" />
 
-    <Button
-        android:id="@+id/test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="test"
-        android:text="Test"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/audio"
-        app:layout_constraintStart_toStartOf="@+id/audio"
-        app:layout_constraintTop_toBottomOf="@+id/audio" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

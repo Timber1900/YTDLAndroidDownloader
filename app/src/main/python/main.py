@@ -67,6 +67,7 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality, pa
                         titlesArray = tempFile.split(".")
                         tempLen = len(titlesArray) - 2
                         video_title = tempFile.replace("." + titlesArray[tempLen], "")
+                        video_title = video_title.replace("." + titlesArray[tempLen + 1], ".mp4")
                         FFmpeg.execute("-i \""+ self.file[i*2] +"\" -i  \""+ self.file[i*2 + 1] +"\" -c:v copy -c:a aac " + "\"" + video_title + "\"")
                         os.remove(self.file[i*2])
                         os.remove(self.file[i*2+1])
