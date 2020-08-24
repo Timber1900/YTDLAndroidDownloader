@@ -38,10 +38,6 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality):
             self.file = []
 
         def download(self, url, filetype):
-            # urlSplitted = url.split(":")
-            # count = len(urlSplitted) - 1
-            # url = urlSplitted[count-1] + ":" + urlSplitted[count]
-            # url = url.replace(" ", "")
             path = str(Environment.getExternalStorageDirectory()) +"/Download/ytdl/%(title)s.%(ext)s"
             if not audioOnly:
                 ydl_opts = {
@@ -61,15 +57,21 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality):
                         }
             with yt.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([url])
-                info_dict = ydl.extract_info(url, download=False)
-                video_title = str(info_dict.get('title', None))
-                
-                if len(self.file) == 2:
-                    lastName = "\"" + str(Environment.getExternalStorageDirectory()) + "/Download/ytdl/" + video_title + ".mp4\""
-                    FFmpeg.execute("-i \""+ self.file[0] +"\" -i  \""+ self.file[1] +"\" -c:v copy -c:a aac " + lastName)
-                    os.remove(self.file[0])
-                    os.remove(self.file[1])
-                return "Done Downloading \"" + video_title + "\""
+                updateVelocity("Converting")
+                update()
+                print(len(self.file))
+                temp = []
+                if len(self.file) >= 2:
+                    for i in range(int(len(self.file) / 2)):
+                        tempFile = self.file[i*2]
+                        titlesArray = tempFile.split(".")
+                        tempLen = len(titlesArray) - 2
+                        video_title = tempFile.replace("." + titlesArray[tempLen], "")
+                        FFmpeg.execute("-i \""+ self.file[i*2] +"\" -i  \""+ self.file[i*2 + 1] +"\" -c:v copy -c:a aac " + "\"" + video_title + "\"")
+                        os.remove(self.file[i*2])
+                        os.remove(self.file[i*2+1])
+                return "Done Downloading"
+                # return str(temp)
 
             
         def my_hook(self, d):
