@@ -60,8 +60,8 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality, pa
                 updateVelocity("Converting")
                 update()
                 info_dict = ydl.extract_info(url, download=False)
-                video_title = str(info_dict.get('title', None))
-                if len(self.file) >= 2:
+                videotitle = str(info_dict.get('title', None))
+                if len(self.file) >= 2 and len(self.file) % 2 == 0:
                     for i in range(int(len(self.file) / 2)):
                         tempFile = self.file[i*2]
                         titlesArray = tempFile.split(".")
@@ -71,7 +71,7 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality, pa
                         FFmpeg.execute("-i \""+ self.file[i*2] +"\" -i  \""+ self.file[i*2 + 1] +"\" -c:v copy -c:a aac " + "\"" + video_title + "\"")
                         os.remove(self.file[i*2])
                         os.remove(self.file[i*2+1])
-                return "Done Downloading \"" + video_title + "\""
+                return "Done Downloading \"" + videotitle + "\""
 
             
         def my_hook(self, d):
