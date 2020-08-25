@@ -57,7 +57,6 @@
         android:id="@+id/audio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onFlipSwtich"
         android:showText="false"
         android:text="Audio Only"
         app:layout_constraintBottom_toBottomOf="parent"
