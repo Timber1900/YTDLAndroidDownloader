@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -36,6 +37,8 @@ open class MainActivity : AppCompatActivity() {
     private var url: String? = null
     private var quality: String? = null
     private var path: String? = null
+    private var filepath: TextView? = null
+
     private lateinit var mSharedPreferences: SharedPreferences
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -50,13 +53,8 @@ open class MainActivity : AppCompatActivity() {
         velocity = findViewById(R.id.velocity)
         audioOnly = findViewById(R.id.audio)
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        quality =
-            mSharedPreferences.getString(getString(R.string.sp_key_quality_preference), "1080")
-        path = mSharedPreferences.getString(
-            "filepicker", Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS
-            ).toString() + "/ytdl")
-
+        quality = mSharedPreferences.getString(getString(R.string.sp_key_quality_preference), "1080")
+        path = mSharedPreferences.getString("filepicker", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/ytdl").toString()
     }
 
 
@@ -74,11 +72,6 @@ open class MainActivity : AppCompatActivity() {
     fun startProgress(view: View?) {
 
         Thread(Runnable {
-            val path = mSharedPreferences.getString(
-                "filepicker", Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOWNLOADS
-                ).toString() + "/ytdl"
-            )
             val insideurl: String? = url
             if (insideurl != null) {
                 runOnUiThread {
@@ -122,26 +115,16 @@ open class MainActivity : AppCompatActivity() {
     }
 
 
-    class SettingsFragment : PreferenceFragmentCompat() , SharedPreferences.OnSharedPreferenceChangeListener {
-        var filePicker: Preference? = null
+    class SettingsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.preference_main, rootKey)
-            filePicker =
-                findPreference("filepicker") as Preference?
+            val filePicker = findPreference("filepicker") as Preference?
             filePicker!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 val i = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
                 i.addCategory(Intent.CATEGORY_DEFAULT)
                 startActivityForResult(Intent.createChooser(i, "Choose directory"), 9999)
                 return@OnPreferenceClickListener true
             }
-        }
-
-        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-            filePicker!!.summary = sharedPreferences!!.getString(
-                "filepicker", Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOWNLOADS
-                ).toString() + "/ytdl"
-            )
         }
     }
 
@@ -182,14 +165,14 @@ open class MainActivity : AppCompatActivity() {
         if (uri.toString().contains("content://com.android.providers")) {
             Toast.makeText(
                 this,
-                "Don't use \"Open from Downloads\"', select the one with your phone name",
+                "Don't use \"Open from Downloads\", select the one with your phone name",
                 Toast.LENGTH_SHORT
             ).show()
         } else {
-            val path_ = FileUtil.getFullPathFromTreeUri(uri, this)
-            mSharedPreferences.edit().putString("filepicker", path_).apply()
-            Toast.makeText(this, path_, Toast.LENGTH_SHORT).show()
-            path = path_
+            val pathInner = FileUtil.getFullPathFromTreeUri(uri, this)
+            mSharedPreferences.edit().putString("filepicker", pathInner).apply()
+            path = pathInner
         }
     }
+
 }

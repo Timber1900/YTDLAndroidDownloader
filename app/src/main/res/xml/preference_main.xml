@@ -18,8 +18,10 @@
             android:title="Select FPS" /> -->
 
         <Preference
+            android:defaultValue="/storage/emulated/0/Downloads/ytdl"
             android:key="filepicker"
-            android:title="Pick Download Location"></Preference>
+            android:title="Pick Download Location"
+            android:summary="Chose where your videos will be downloaded"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="Feedback">
 
