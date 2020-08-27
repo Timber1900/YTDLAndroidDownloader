@@ -2,7 +2,6 @@ from java import dynamic_proxy
 from java.lang import Runnable
 import os
 import youtube_dl as yt
-from android.os import Environment
 from com.arthenica.mobileffmpeg import FFmpeg
 
 def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality, path):
@@ -37,9 +36,9 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality, pa
         def __init__(self):
             self.file = []
 
-        def download(self, url, filetype, path):
+        def download(self, url, filetype, path, audio):
             path = path + "/%(title)s.%(ext)s"
-            if not audioOnly:
+            if not audio:
                 ydl_opts = {
                             "outtmpl": path,
                             "format": filetype,
@@ -61,7 +60,7 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality, pa
                 update()
                 info_dict = ydl.extract_info(url, download=False)
                 videotitle = str(info_dict.get('title', None))
-                if len(self.file) >= 2 and len(self.file) % 2 == 0:
+                if not audio:
                     for i in range(int(len(self.file) / 2)):
                         tempFile = self.file[i*2]
                         titlesArray = tempFile.split(".")
@@ -100,5 +99,5 @@ def run(activity, url, audioOnly, progressW, percentageW, velocityW, quality, pa
     print(quality)
     classToRun = R()    
     down = downloader()
-    val = down.download(url, filetype, path)
+    val = down.download(url, filetype, path, audioOnly)
     return val
