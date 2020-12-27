@@ -19,7 +19,7 @@ android {
         }
         python {
             pip {
-                install "youtube-dl==2020.11.21.1"
+                install "youtube-dl==2020.12.22"
             }
         }
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -43,7 +43,7 @@ dependencies {
     implementation 'com.arthenica:mobile-ffmpeg-full:4.4'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.preference:preference-ktx:1.1.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

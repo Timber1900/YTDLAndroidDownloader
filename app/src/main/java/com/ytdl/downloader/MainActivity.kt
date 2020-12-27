@@ -9,6 +9,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
+import android.provider.Settings
+import android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -37,8 +40,6 @@ open class MainActivity : AppCompatActivity() {
     private var url: String? = null
     private var quality: String? = null
     private var path: String? = null
-    private var filepath: TextView? = null
-
     private lateinit var mSharedPreferences: SharedPreferences
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -46,6 +47,9 @@ open class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         checkPermission(Manifest.permission.INTERNET, 100)
         checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 101)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            checkPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE, 102)
+        }
         setContentView(R.layout.activity_main)
         videoTitle = findViewById(R.id.videoTitle)
         progress = findViewById(R.id.progress)
@@ -58,6 +62,7 @@ open class MainActivity : AppCompatActivity() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.R)
     public override fun onStart() {
         if (intent.extras != null) {
             if (intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == 0) {
@@ -66,11 +71,24 @@ open class MainActivity : AppCompatActivity() {
                 url = extras!!.getString(Intent.EXTRA_TEXT).toString()
             }
         }
+
+        if(!Environment.isExternalStorageManager()){
+            val intent = Intent(ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+            startActivityForResult(intent, 100)
+        }
+
         super.onStart()
     }
 
-    fun startProgress(view: View?) {
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        if(!hasFocus){
+            finish()
+        }
+        super.onWindowFocusChanged(hasFocus)
+    }
 
+    @RequiresApi(Build.VERSION_CODES.R)
+    fun startProgress(view: View?) {
         Thread(Runnable {
             val insideurl: String? = url
             if (insideurl != null) {
@@ -113,7 +131,6 @@ open class MainActivity : AppCompatActivity() {
             )
         }
     }
-
 
     class SettingsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -158,7 +175,6 @@ open class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val uri: Uri = data!!.data!!
@@ -174,5 +190,4 @@ open class MainActivity : AppCompatActivity() {
             path = pathInner
         }
     }
-
 }
